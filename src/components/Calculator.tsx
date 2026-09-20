@@ -20,7 +20,7 @@ function Calculator() {
 
   const handleButtonClick = (value: string) => {
     setDisplay((prevDisplay) => {
-      if (prevDisplay === "0" || prevDisplay === "") {
+      if (prevDisplay === "0" || prevDisplay === "" || prevDisplay === "Error") {
         return value;
       }
 
@@ -33,9 +33,9 @@ function Calculator() {
   };
 
   const calculate = (first: number, second: number, operator: string) => {
-  if (operator === "+") {
-    return first + second;
-  }
+    if (operator === "+") {
+      return first + second;
+    }
 
   if (operator === "−") {
     return first - second;
@@ -46,11 +46,15 @@ function Calculator() {
   }
 
   if (operator === "÷") {
+    if (second === 0) {
+      return NaN;
+    }
+
     return first / second;
   }
 
   return second;
-  };
+};
 
   const handleOperatorClick = (value: string) => {
     if (firstNumber !== "" && operator !== "" && display !== "") {
@@ -71,6 +75,30 @@ function Calculator() {
     setOperator(value);
     setDisplay("");
   };
+
+const handleEqualsClick = () => {
+  if (firstNumber === "" || operator === "" || display === "") {
+    return;
+  }
+
+  const result = calculate(
+    Number(firstNumber),
+    Number(display),
+    operator
+  );
+
+  if (Number.isNaN(result)) {
+    setDisplay("Error");
+    setFirstNumber("");
+    setOperator("");
+
+    return;
+  }
+
+  setDisplay(String(result));
+  setFirstNumber("");
+  setOperator("");
+};
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-950">
@@ -173,7 +201,10 @@ function Calculator() {
             .
           </button>
 
-          <button className="rounded-lg bg-green-500 p-4 text-white hover:cursor-pointer">
+          <button 
+            onClick={handleEqualsClick}
+            className="rounded-lg bg-green-500 p-4 text-white hover:cursor-pointer"
+          >
             =
           </button>
         </div>
