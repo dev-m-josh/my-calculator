@@ -2,6 +2,8 @@ import { useState } from "react";
 
 function Calculator() {
   const [display, setDisplay] = useState("0");
+  const [firstNumber, setFirstNumber] = useState("");
+  const [operator, setOperator] = useState("");
 
   const numbers = [
     "7",
@@ -18,7 +20,7 @@ function Calculator() {
 
   const handleButtonClick = (value: string) => {
     setDisplay((prevDisplay) => {
-      if (prevDisplay === "0") {
+      if (prevDisplay === "0" || prevDisplay === "") {
         return value;
       }
 
@@ -30,13 +32,53 @@ function Calculator() {
     });
   };
 
+  const calculate = (first: number, second: number, operator: string) => {
+  if (operator === "+") {
+    return first + second;
+  }
+
+  if (operator === "−") {
+    return first - second;
+  }
+
+  if (operator === "×") {
+    return first * second;
+  }
+
+  if (operator === "÷") {
+    return first / second;
+  }
+
+  return second;
+  };
+
+  const handleOperatorClick = (value: string) => {
+    if (firstNumber !== "" && operator !== "" && display !== "") {
+      const result = calculate(
+        Number(firstNumber),
+        Number(display),
+        operator
+      );
+
+      setFirstNumber(String(result));
+      setOperator(value);
+      setDisplay("");
+
+      return;
+    }
+
+    setFirstNumber(display);
+    setOperator(value);
+    setDisplay("");
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-950">
-      <div className="mx-4 max-w-sm w-96 rounded-2xl bg-slate-800 p-4">
+      <div className="mx-4 w-full max-w-sm rounded-2xl bg-slate-800 p-4 sm:w-96">
         {/* Display */}
       <div className="mb-4 overflow-hidden rounded-lg bg-slate-900 p-4 text-right">
         <span className="block break-all text-3xl font-bold text-white">
-          {display}
+          {firstNumber} {operator} {display}
         </span>
       </div>
 
@@ -55,7 +97,10 @@ function Calculator() {
             %
           </button>
 
-          <button className="rounded-lg bg-orange-500 p-4 text-white hover:cursor-pointer">
+          <button 
+          onClick={() => handleOperatorClick("÷")}
+          className="rounded-lg bg-orange-500 p-4 text-white hover:cursor-pointer"
+          >
             ÷
           </button>
 
@@ -70,7 +115,10 @@ function Calculator() {
             </button>
           ))}
 
-          <button className="rounded-lg bg-orange-500 p-4 text-white hover:cursor-pointer">
+          <button 
+            onClick={() => handleOperatorClick("×")}
+            className="rounded-lg bg-orange-500 p-4 text-white hover:cursor-pointer"
+          >
             ×
           </button>
 
@@ -85,7 +133,10 @@ function Calculator() {
             </button>
           ))}
 
-          <button className="rounded-lg bg-orange-500 p-4 text-white hover:cursor-pointer">
+          <button 
+            onClick={() => handleOperatorClick("−")}
+            className="rounded-lg bg-orange-500 p-4 text-white hover:cursor-pointer"
+          >
             −
           </button>
 
@@ -100,7 +151,10 @@ function Calculator() {
             </button>
           ))}
 
-          <button className="rounded-lg bg-orange-500 p-4 text-white hover:cursor-pointer">
+          <button 
+            onClick={() => handleOperatorClick("+")}
+            className="rounded-lg bg-orange-500 p-4 text-white hover:cursor-pointer"
+          >
             +
           </button>
 
